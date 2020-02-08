@@ -102,17 +102,8 @@ def is_good_board(grid):
     return True
 
 
-def number_count(grid):
-    tally = 0
-    for row in grid:
-        for cell in row:
-            if isinstance(cell, int):
-                tally += 1
-    return tally
-
-
 def check_for_victory(grid):
-    if number_count(grid) == 81 and is_good_board(grid):
+    if sum(sum(1 for cell in row if isinstance(cell, int)) for row in grid) == 81 and is_good_board(grid):
         return True
     return False
 
