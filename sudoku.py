@@ -103,9 +103,7 @@ def is_good_board(grid):
 
 
 def check_for_victory(grid):
-    if sum(sum(1 for cell in row if isinstance(cell, int)) for row in grid) == 81 and is_good_board(grid):
-        return True
-    return False
+    return sum(sum(1 for cell in row if isinstance(cell, int)) for row in grid) == 81 and is_good_board(grid)
 
 
 def fill_website(grid, driver):
