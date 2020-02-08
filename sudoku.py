@@ -1,3 +1,4 @@
+from argparse import ArgumentParser
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
@@ -340,10 +341,17 @@ def recursive_solve(original_grid, driver):
 
 
 def main():
+    parser = ArgumentParser()
+    parser.add_argument("-d", "--difficulty", type=int, help="Difficulty (1-4, 1=Easy, 4=Evil); default 4", default=4)
+    args = parser.parse_args()
+
+    if args.difficulty < 1 or args.difficulty > 4:
+        args.difficulty = 4
+
     # First, start a browser up and load WebSudoku
     driver = webdriver.Firefox(service_log_path=devnull)
     driver.implicitly_wait(2)  # wait a couple of seconds
-    driver.get("https://www.websudoku.com/?level=4")
+    driver.get(f"https://www.websudoku.com/?level={args.difficulty}")
 
     # Focus attention on the actual puzzle/grid
     frame = driver.find_element_by_xpath("//frame[contains(@src,'websudoku.com/')]")
