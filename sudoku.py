@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from copy import deepcopy
@@ -108,7 +109,7 @@ def check_for_victory(grid):
 
 def fill_website(grid, driver):
     print_status(grid)
-    driver.find_element_by_id("f00").send_keys(Keys.BACKSPACE)
+    driver.find_element("id", "f00").send_keys(Keys.BACKSPACE)
     for j in range(9):
         for i in range(9):
             action_chain = ActionChains(driver)
@@ -338,12 +339,15 @@ def main():
         args.difficulty = 4
 
     # First, start a browser up and load WebSudoku
-    driver = webdriver.Firefox(service_log_path=devnull)
+    service = Service(
+        service_log_path=devnull
+    )
+    driver = webdriver.Firefox(service=service)
     driver.implicitly_wait(2)  # wait a couple of seconds
     driver.get(f"https://www.websudoku.com/?level={args.difficulty}")
 
     # Focus attention on the actual puzzle/grid
-    frame = driver.find_element_by_xpath("//frame[contains(@src,'websudoku.com/')]")
+    frame = driver.find_element("xpath", "//frame[contains(@src,'websudoku.com/')]")
     driver.switch_to.frame(frame)
 
     # Load the initial grid state
@@ -353,8 +357,8 @@ def main():
         for j in range(9):
             this_id = "f%s%s" % (j, i)
             this_val = (
-                int(driver.find_element_by_id(this_id).get_attribute("value"))
-                if len(driver.find_element_by_id(this_id).get_attribute("value")) > 0
+                int(driver.find_element("id", this_id).get_attribute("value"))
+                if len(driver.find_element("id", this_id).get_attribute("value")) > 0
                 else " "
             )
             puzzle[i].append(this_val)
